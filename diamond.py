@@ -4,31 +4,11 @@ from geometry_msgs.msg import Twist
 
 class TurtleController(Node):
     def __init__(self):
-        super().__init__('turtle_diamond')
+        super().__init__('turtle_controller')
         self.publisher = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
-        timer_period = 0.5
+        timer_period = 0.5  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.time = 0
-
-    def get_twist_msg(self):
-        if self.time < 6:
-            return self.create_twist(1.0, 0.0)  # side 1
-        elif self.time < 8:
-            return self.create_twist(0.0, 0.8)  # ~45° turn
-        elif self.time < 14:
-            return self.create_twist(1.0, 0.0)  # side 2
-        elif self.time < 16:
-            return self.create_twist(0.0, 0.8)  # turn
-        elif self.time < 22:
-            return self.create_twist(1.0, 0.0)  # side 3
-        elif self.time < 24:
-            return self.create_twist(0.0, 0.8)  # turn
-        elif self.time < 30:
-            return self.create_twist(1.0, 0.0)  # side 4
-        elif self.time < 32:
-            return self.create_twist(0.0, 0.8)  # final turn
-        else:
-            return self.create_twist(0.0, 0.0)  # stop
 
     def create_twist(self, linear_x, angular_z):
         msg = Twist()
@@ -36,11 +16,32 @@ class TurtleController(Node):
         msg.angular.z = angular_z
         return msg
 
+    def get_twist_msg(self):
+        if self.time < 2:  # rotate ~45 deg at start
+            msg = self.create_twist(0.0, 0.8)
+        elif self.time < 7:
+            msg = self.create_twist(1.0, 0.0)
+        elif self.time < 9:
+            msg = self.create_twist(0.0, 1.6)  # 90 deg
+        elif self.time < 14:
+            msg = self.create_twist(1.0, 0.0)
+        elif self.time < 16:
+            msg = self.create_twist(0.0, 1.6)
+        elif self.time < 21:
+            msg = self.create_twist(1.0, 0.0)
+        elif self.time < 23:
+            msg = self.create_twist(0.0, 1.6)
+        elif self.time < 28:
+            msg = self.create_twist(1.0, 0.0)
+        else:
+            msg = self.create_twist(0.0, 0.0)
+        return msg
+    
     def timer_callback(self):
         msg = self.get_twist_msg()
         self.publisher.publish(msg)
         self.time += 1
-        print(f"time: {self.time}")
+        print("time:", self.time)
 
 def main(args=None):
     rclpy.init(args=args)
