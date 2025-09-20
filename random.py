@@ -17,15 +17,15 @@ class TurtleController(Node):
         return msg
 
     def get_twist_msg(self):
-        if self.time < 5:
+        if self.time < 10:
             msg = self.create_twist(1.0, 0.0)  # side 1
-        elif self.time < 8:
+        elif self.time < 14:
             msg = self.create_twist(0.0, 1.05)  # ~120 deg turn
-        elif self.time < 13:
+        elif self.time < 24:
             msg = self.create_twist(1.0, 0.0)  # side 2
-        elif self.time < 16:
+        elif self.time < 28:
             msg = self.create_twist(0.0, 1.05)  # turn again
-        elif self.time < 21:
+        elif self.time < 38:
             msg = self.create_twist(1.0, 0.0)  # side 3
         else:
             msg = self.create_twist(0.0, 0.0)  # stop
